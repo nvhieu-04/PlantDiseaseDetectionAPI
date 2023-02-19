@@ -14,6 +14,10 @@ const RoomSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  imageRoom: {
+    type: String,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

@@ -26,6 +26,10 @@ const PlantSchema = mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  imagePlant: {
+    type: String,
+    required: true,
+  },
 });
 
 // export model user with UserSchema

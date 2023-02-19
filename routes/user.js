@@ -2,8 +2,9 @@ const express = require("express");
 const { check, validationResult } = require("express-validator/check");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
 const router = express.Router();
-
 const User = require("../models/User");
 const auth = require("../middlewares/auth");
 const Room = require("../models/Room");
@@ -14,6 +15,45 @@ const Plant = require("../models/Plant");
  * @param - /signup
  * @description - User SignUp
  */
+
+const storage = multer.diskStorage({
+  // Destination to store image
+  destination: "images",
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      file.originalname,
+    );
+  },
+});
+
+const imageUpload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1000000, // 1000000 Bytes = 1 MB
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(png|jpg)$/)) {
+      // upload only png and jpg format
+      return cb(new Error("Please upload a Image"));
+    }
+    cb(undefined, true);
+  },
+});
+
+// For Single image upload
+router.post(
+  "/uploadImage",
+  imageUpload.single("image"),
+  (req, res) => {
+    res.status(200).send({
+      msg: req.file.filename,
+    });
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 
 router.post(
   "/signup",
@@ -154,19 +194,11 @@ router.get("/me", auth, async (req, res) => {
 //post information room for user by userID
 router.post("/createRoom", async (req, res) => {
   try {
-    const { nameRoom, idUser } = req.body;
-    let room = await User.findOne({
+    const { nameRoom, idUser, imageRoom } = req.body;
+    const room = new Room({
       nameRoom,
       idUser,
-    });
-    if (room.nameRoom) {
-      return res.status(400).json({
-        msg: "NameRoom Already Exists",
-      });
-    }
-    room = new Room({
-      nameRoom,
-      idUser,
+      imageRoom,
     });
     await room.save();
     return res.status(200).json({
@@ -188,12 +220,13 @@ router.get("/getRoom", auth, async (req, res) => {
 
 router.post("/createPlant", async (req, res) => {
   try {
-    const { namePlant, nameRoom, healthStatus, userID } = req.body;
+    const { namePlant, nameRoom, healthStatus, userID, imagePlant } = req.body;
     const plant = new Plant({
       namePlant,
       nameRoom,
       healthStatus,
       userID,
+      imagePlant,
     });
     await plant.save();
     return res.status(200).json({
