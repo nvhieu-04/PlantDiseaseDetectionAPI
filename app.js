@@ -13,5 +13,6 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => res.send("Hello World!"));
 app.use("/user", user);
 app.use("/datasets", dataset);
+app.use(express.static("modelsPytorch"));
 app.use(express.static("images"));
 app.listen(port, () => console.log(`App listening on port ${port}!`));

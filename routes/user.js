@@ -4,11 +4,13 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 const router = express.Router();
 const User = require("../models/User");
 const auth = require("../middlewares/auth");
 const Room = require("../models/Room");
 const Plant = require("../models/Plant");
+const { ok } = require("assert");
 
 /**
  * @method - POST
@@ -20,10 +22,15 @@ const storage = multer.diskStorage({
   // Destination to store image
   destination: "images",
   filename: (req, file, cb) => {
-    cb(
-      null,
-      file.originalname,
-    );
+    cb(null, file.originalname);
+  },
+});
+
+const storageModel = multer.diskStorage({
+  // Destination to store image
+  destination: "modelsPytorch",
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
   },
 });
 
@@ -36,6 +43,20 @@ const imageUpload = multer({
     if (!file.originalname.match(/\.(png|jpg)$/)) {
       // upload only png and jpg format
       return cb(new Error("Please upload a Image"));
+    }
+    cb(undefined, true);
+  },
+});
+
+const modelUpload = multer({
+  storage: storageModel,
+  limits: {
+    fileSize: 100000000, // 100000000 Bytes = 100 MB
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(pt|plt)$/)) {
+      // upload only glb and gltf format
+      return cb(new Error("Please upload a Model"));
     }
     cb(undefined, true);
   },
@@ -54,6 +75,45 @@ router.post(
     res.status(400).send({ error: error.message });
   }
 );
+
+router.post(
+  "/uploadModel",
+  modelUpload.single("model"),
+  (req, res) => {
+    res.status(200).send({
+      msg: req.file.filename,
+    });
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
+
+router.delete("/deleteImage", (req, res) => {
+  const { filename } = req.body;
+  fs.unlink(path.join(__dirname, "../images/" + filename), (err) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    res.status(200).send({
+      msg: "File deleted successfully",
+    });
+  });
+});
+
+router.delete("/deleteModel", (req, res) => {
+  const { filename } = req.body;
+  fs.unlink(path.join(__dirname, "../modelsPytorch/" + filename), (err) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    res.status(200).send({
+      msg: "File deleted successfully",
+    });
+  });
+});
 
 router.post(
   "/signup",
@@ -249,6 +309,8 @@ router.get("/getPlant", auth, async (req, res) => {
 router.delete("/deletePlant/:id", auth, async (req, res) => {
   try {
     const plant = await Plant.findByIdAndDelete(req.params.id);
+    // const img = plant.imagePlant;
+    // fs.unlinkSync(images/img)
     return res.status(200).json({
       msg: "Delete plant",
     });
