@@ -54,7 +54,7 @@ const modelUpload = multer({
     fileSize: 100000000, // 100000000 Bytes = 100 MB
   },
   fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(pt|plt)$/)) {
+    if (!file.originalname.match(/\.(pt|plt|pth)$/)) {
       // upload only glb and gltf format
       return cb(new Error("Please upload a Model"));
     }
@@ -254,11 +254,12 @@ router.get("/me", auth, async (req, res) => {
 //post information room for user by userID
 router.post("/createRoom", async (req, res) => {
   try {
-    const { nameRoom, idUser, imageRoom } = req.body;
+    const { nameRoom, idUser, imageRoom, floor } = req.body;
     const room = new Room({
       nameRoom,
       idUser,
       imageRoom,
+      floor,
     });
     await room.save();
     return res.status(200).json({
