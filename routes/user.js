@@ -54,7 +54,7 @@ const modelUpload = multer({
     fileSize: 100000000, // 100000000 Bytes = 100 MB
   },
   fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(pt|plt|pth)$/)) {
+    if (!file.originalname.match(/\.(pt|ptl|pth)$/)) {
       // upload only glb and gltf format
       return cb(new Error("Please upload a Model"));
     }
@@ -322,12 +322,13 @@ router.delete("/deletePlant/:id", auth, async (req, res) => {
 
 router.put("/updatePlant/:id", auth, async (req, res) => {
   try {
-    const { namePlant, nameRoom, healthStatus, userID } = req.body;
+    const { namePlant, nameRoom, healthStatus, userID, imagePlant } = req.body;
     const plant = await Plant.findByIdAndUpdate(req.params.id, {
       namePlant,
       nameRoom,
       healthStatus,
       userID,
+      imagePlant,
     });
     return res.status(200).json({
       msg: "Update plant",
