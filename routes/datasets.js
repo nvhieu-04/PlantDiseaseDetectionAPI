@@ -128,6 +128,41 @@ router.get("/link", function (req, res) {
       id: "25",
       link: "http://s3-hcm-r1.longvan.net/iec-dataset/iCassava-2019-Dataset.zip",
     },
+    {
+      name: "PlantVillage-Dataset",
+      id: "26",
+      link: "http://s3-hcm-r1.longvan.net/iec-dataset/PlantVillage-Dataset.zip",
+    },
+    {
+      name: "An-Image-Dataset-for-Field-Crop-Disease-Identification",
+      id: "27",
+      link: "http://s3-hcm-r1.longvan.net/iec-dataset/An-Image-Dataset-for-Field-Crop-Disease-Identification.zip",
+    },
+    {
+      name: "A-Data-Repository-of-Leaf-Images-Dataset",
+      id: "28",
+      link: "http://s3-hcm-r1.longvan.net/iec-dataset/A-Data-Repository-of-Leaf-Images-Dataset.zip",
+    },
+    {
+      name: "Plant-Doc-Dataset",
+      id: "29",
+      link: "http://s3-hcm-r1.longvan.net/iec-dataset/Plant-Doc-Dataset.zip",
+    },
+    {
+      name: "PDDB-Dataset",
+      id: "30",
+      link: "http://s3-hcm-r1.longvan.net/iec-dataset/PDDB-Dataset.zip",
+    },
+    {
+      name: "XDB-Dataset",
+      id: "31",
+      link: "http://s3-hcm-r1.longvan.net/iec-dataset/XDB-Dataset.zip",
+    },
+    {
+      name: "Plantraek-Dataset",
+      id: "32",
+      link: "http://s3-hcm-r1.longvan.net/iec-dataset/Plantraek-Dataset.zip",
+    },
   ]);
 });
 
