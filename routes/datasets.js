@@ -159,7 +159,7 @@ router.get("/link", function (req, res) {
       link: "http://s3-hcm-r1.longvan.net/iec-dataset/XDB-Dataset.zip",
     },
     {
-      name: "Plantraek-Dataset",
+      name: "The-Plantraek-Dataset",
       id: "32",
       link: "http://s3-hcm-r1.longvan.net/iec-dataset/Plantraek-Dataset.zip",
     },
