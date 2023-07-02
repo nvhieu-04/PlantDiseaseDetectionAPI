@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const Dataset = require("../models/Dataset");
 
 router.get("/link", function (req, res) {
   res.json([
@@ -165,5 +166,45 @@ router.get("/link", function (req, res) {
     },
   ]);
 });
+
+router.post("/download", async (req, res) => {
+  const { nameDataset, url } = req.body;
+  const dataset = new Dataset({
+    nameDataset,
+    url,
+  });
+  await dataset.save();
+  return res.status(200).json({
+    msg: "Dataset created",
+  });
+});
+
+router.get("/download", async (req, res) => {
+  const { nameDataset } = req.body;
+  const dataset = await Dataset.find({ nameDataset }).limit(1);
+  if (dataset.length === 0) {
+    return res.status(404).json({
+      msg: "Dataset not found",
+    });
+  }
+  const url = dataset[0].url;
+  return res.status(200).json({
+    url,
+  });
+});
+
+router.delete("/download", async (req, res) => {
+  const { nameDataset } = req.body;
+  const dataset = await Dataset.deleteOne({ nameDataset }).limit(1);
+  if (dataset.length === 0) {
+    return res.status(404).json({
+      msg: "Dataset not found",
+    });
+  }
+  return res.status(200).json({
+    msg: "Dataset deleted",
+  });
+});
+
 
 module.exports = router;
