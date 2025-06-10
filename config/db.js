@@ -1,12 +1,10 @@
 const mongoose = require("mongoose");
-
-// Replace this with your MONGOURI.
-const MONGOURI = "mongodb+srv://admin:admin@cluster0.e88bnka.mongodb.net/?retryWrites=true&w=majority";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/mydatabase"; // Replace with your MongoDB URI
 
 const InitiateMongoServer = async () => {
   try {
     mongoose.set('strictQuery', false);
-    await mongoose.connect(MONGOURI, {
+    await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
     });
     console.log("Connected to DB !!");
